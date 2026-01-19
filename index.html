@@ -3,179 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Tarifas | Electro Service S.A.</title>
+    <title>Tarifario Maestro 2026 | Electro Service S.A.</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
-        .glass-panel { 
-            background: rgba(15, 23, 42, 0.8); 
-            backdrop-filter: blur(24px); 
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        :root {
+            --lg-red: #a50034;
+            --brand-blue: #005691;
+            --soft-gray: #f8fafc;
+            --text-dark: #1e293b;
         }
-        .tab-btn { transition: all 0.3s ease; color: #64748b; position: relative; }
-        .tab-btn.active { color: #3b82f6; font-weight: 700; }
-        .tab-btn.active::after {
-            content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px;
-            background: #3b82f6; border-radius: 10px; box-shadow: 0 0 20px #3b82f6;
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #ffffff; 
+            color: var(--text-dark);
+            margin: 0;
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .price-text { font-family: 'Monaco', monospace; color: #60a5fa; }
-        .warning-box { background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; }
+
+        .header-brand {
+            background: white;
+            border-bottom: 4px solid var(--lg-red);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            padding: 14px 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--brand-blue);
+            border-bottom-color: var(--brand-blue);
+            background-color: #f0f9ff;
+        }
+
+        .table-wrapper {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: var(--soft-gray);
+            color: #475569;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        tr:hover { background-color: #f1f5f9; }
+
+        .price-cell {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            color: var(--brand-blue);
+        }
+
+        .search-bar {
+            background: var(--soft-gray);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 20px;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s;
+        }
+
+        .search-bar:focus {
+            border-color: var(--brand-blue);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 86, 145, 0.1);
+        }
     </style>
 </head>
-<body class="min-h-screen py-12 px-4">
+<body>
 
-    <header class="max-w-7xl mx-auto mb-12 text-center">
-        <h1 class="text-4xl md:text-6xl font-black italic tracking-tighter text-white">ELECTRO SERVICE <span class="text-blue-600">S.A.</span></h1>
-        <p class="text-slate-500 text-[11px] tracking-[0.5em] mt-4 font-bold uppercase">Tarifario Maestro Oficial 2026</p>
-    </header>
-
-    <div class="max-w-7xl mx-auto mb-8 border-b border-slate-800/50 overflow-x-auto no-scrollbar">
-        <div class="flex space-x-8 px-4 pb-2">
-            <button onclick="renderTab('mantenimientos')" id="btn-mantenimientos" class="tab-btn active text-[10px] uppercase tracking-widest">Mantenimientos</button>
-            <button onclick="renderTab('inst_general')" id="btn-inst_general" class="tab-btn text-[10px] uppercase tracking-widest">Instalaciones General</button>
-            <button onclick="renderTab('inst_kit')" id="btn-inst_kit" class="tab-btn text-[10px] uppercase tracking-widest">Instalaciones con Kit</button>
-            <button onclick="renderTab('inst_tv')" id="btn-inst_tv" class="tab-btn text-[10px] uppercase tracking-widest">Instalaciones TV</button>
-            <button onclick="renderTab('mo_general')" id="btn-mo_general" class="tab-btn text-[10px] uppercase tracking-widest">Mano de Obra Gral</button>
-            <button onclick="renderTab('mo_compresor')" id="btn-mo_compresor" class="tab-btn text-[10px] uppercase tracking-widest">Compresores</button>
-            <button onclick="renderTab('diagnostico')" id="btn-diagnostico" class="tab-btn text-[10px] uppercase tracking-widest">Diagnóstico</button>
+<header class="header-brand">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="border-l-4 border-[var(--brand-blue)] pl-3">
+                <h1 class="text-xl font-black tracking-tight text-slate-800">ELECTRO SERVICE S.A.</h1>
+                <p class="text-[10px] font-bold text-[var(--lg-red)] uppercase tracking-[0.2em]">Servicio Técnico Autorizado LG</p>
+            </div>
         </div>
+        <input type="text" id="searchInput" onkeyup="filterData()" placeholder="Buscar producto o servicio..." class="search-bar">
     </div>
 
-    <div id="tab-notice" class="max-w-7xl mx-auto mb-4 hidden">
-        <div class="warning-box p-4 rounded-r-xl text-amber-500 text-xs font-bold uppercase tracking-wider">
-            ⚠️ Nota: Estas instalaciones NO incluyen accesorios (se venden por separado).
-        </div>
-    </div>
+    <nav class="max-w-7xl mx-auto px-4 flex overflow-x-auto">
+        <button onclick="switchTab('mantenimientos')" class="tab-btn active" id="btn-mantenimientos">Mantenimientos</button>
+        <button onclick="switchTab('instalaciones_general')" class="tab-btn" id="btn-instalaciones_general">Instalaciones General</button>
+        <button onclick="switchTab('instalaciones_kit')" class="tab-btn" id="btn-instalaciones_kit">Instalaciones con Kit</button>
+        <button onclick="switchTab('television')" class="tab-btn" id="btn-television">Televisión y Audio</button>
+        <button onclick="switchTab('manos_obra')" class="tab-btn" id="btn-manos_obra">Mano de Obra General</button>
+        <button onclick="switchTab('compresores')" class="tab-btn" id="btn-compresores">Mano de Obra Compresores</button>
+        <button onclick="switchTab('diagnostico')" class="tab-btn" id="btn-diagnostico">Diagnóstico</button>
+    </nav>
+</header>
 
-    <div class="max-w-7xl mx-auto glass-panel rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-slate-900/60 border-b border-slate-800">
-                    <tr id="table-header"></tr>
-                </thead>
-                <tbody id="table-body" class="divide-y divide-slate-800/40"></tbody>
-            </table>
-        </div>
-    </div>
+<main class="table-wrapper">
+    <table id="mainTable">
+        <thead id="tableHeader"></thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</main>
 
-    <script>
-        const dataMaster = {
-            mantenimientos: {
-                headers: ["Descripción del Servicio", "Preventivo", "Especializado"],
-                rows: [
-                    ["Lavadora C. Frontal", "$300.000", "$360.000"],
-                    ["Lavadora C. Superior", "$220.000", "$250.000"],
-                    ["Lavadora/Secadora 2 en 1", "$330.000", "$380.000"],
-                    ["Lavadora y Secadora (2 Prod)", "$510.000", "$610.000"],
-                    ["Lavadora y Twin Wash (2 Prod)", "$480.000", "$570.000"],
-                    ["Lavadora Twin Wash", "$210.000", "$250.000"],
-                    ["Lavavajillas", "$290.000", "$340.000"],
-                    ["Nevecón Básico", "$130.000", "$150.000"],
-                    ["Nevecón Premium", "$280.000", "$320.000"],
-                    ["Secadora", "$220.000", "$260.000"],
-                    ["Wash Tower", "$510.000", "$570.000"],
-                    ["Wash Tower (No Desarman)", "$380.000", "$450.000"],
-                    ["Estufas", "$300.000", "$350.000"],
-                    ["Styler", "$230.000", "$270.000"]
-                ]
-            },
-            inst_general: {
-                headers: ["Tipo de Instalación / Logística", "Valor Servicio"],
-                rows: [
-                    ["INSTALACIÓN de Lavadora", "$70.000"],
-                    ["INSTALACIÓN de Lavadora y Twin Wash", "$150.000"],
-                    ["INSTALACIÓN de Nevecón", "$70.000"],
-                    ["Instalacion Wash Tower Electrica", "$160.000"],
-                    ["Instalacion Styler", "$90.000"],
-                    ["Cambio sentido apertura puertas", "$160.000"],
-                    ["Desmonte de (2) puertas", "$85.000"],
-                    ["Desmonte de (3) puertas", "$115.000"],
-                    ["Desmonte de (4) puertas", "$140.000"],
-                    ["Desmonte de (5) puertas", "$170.000"]
-                ]
-            },
-            inst_kit: {
-                headers: ["Servicio", "Con Kit", "Sin Kit"],
-                rows: [
-                    ["Instalacion Secadora", "$320.000", "$160.000"],
-                    ["Instalacion Wash Tower a gas", "$360.000", "$190.000"],
-                    ["Conversion a gas Propano / Natural", "$180.000", "$130.000"],
-                    ["Desmonte Wash Tower", "$190.000", "-"],
-                    ["Apertura puerta secadora", "$110.000", "-"],
-                    ["Instalacion Lavavajillas", "$340.000", "$190.000"],
-                    ["INSTALACIÓN de Estufa", "$140.000", "$90.000"]
-                ]
-            },
-            inst_tv: {
-                headers: ["Tamaño Equipo", "Sin Base", "Fijo", "De Brazo"],
-                rows: [
-                    ["LCD/OLED > 55\"", "$180.000", "$280.000", "$420.000"],
-                    ["LCD/OLED > 75\"", "$230.000", "$350.000", "$670.000"],
-                    ["LCD/OLED > 80\"", "$310.000", "$520.000", "$870.000"]
-                ]
-            },
-            mo_general: {
-                headers: ["Tipo de Equipo", "Sencilla", "Compleja"],
-                rows: [
-                    ["Lavadoras Carga Frontal", "$220.000", "$290.000"],
-                    ["Secadoras Wash Tower / Apilada", "$250.000", "$290.000"],
-                    ["Lavavajillas", "$250.000", "$290.000"],
-                    ["Lavadora en Wash Tower", "$230.000", "$290.000"],
-                    ["Lavadora Twin Wash", "$250.000", "$290.000"],
-                    ["Neveras / Nevecones", "$220.000", "$290.000"],
-                    ["Estufas", "$220.000", "$290.000"],
-                    ["LCD/OLED < 50", "$180.000", "$230.000"],
-                    ["LCD/OLED > 50", "$200.000", "$320.000"],
-                    ["LCD/OLED > 75", "$290.000", "$480.000"],
-                    ["LCD/OLED > 80", "$350.000", "$570.000"]
-                ]
-            },
-            mo_compresor: {
-                headers: ["Servicio de Compresor", "Nevera", "Nevecon"],
-                rows: [
-                    ["Cambio de Compresor", "$690.000", "$820.000"],
-                    ["Cambio Compresor (2 visitas)", "$950.000", "$1.120.000"],
-                    ["Cambio Compresor y Evaporador", "$740.000", "$910.000"],
-                    ["Mano Obra Filtro Agua", "-", "$90.000"]
-                ]
-            },
-            diagnostico: {
-                headers: ["Concepto", "Domicilio", "Laboratorio"],
-                rows: [
-                    ["DIAGNOSTICO GENERAL", "$90.000", "$70.000"]
-                ]
-            }
-        };
-
-        function renderTab(key) {
-            const h = document.getElementById('table-header');
-            const b = document.getElementById('table-body');
-            const notice = document.getElementById('tab-notice');
-            
-            // Toggle Notice
-            if(key === 'inst_general') notice.classList.remove('hidden');
-            else notice.classList.add('hidden');
-
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${key}`).classList.add('active');
-
-            h.innerHTML = dataMaster[key].headers.map(title => `
-                <th class="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">${title}</th>
-            `).join('');
-
-            b.innerHTML = dataMaster[key].rows.map(row => `
-                <tr>
-                    <td class="px-8 py-6 text-sm font-semibold text-slate-200">${row[0]}</td>
-                    <td class="px-8 py-6 text-sm price-text font-bold">${row[1]}</td>
-                    ${row[2] ? `<td class="px-8 py-6 text-sm font-bold text-white text-right pr-12">${row[2]}</td>` : ''}
-                    ${row[3] ? `<td class="px-8 py-6 text-sm font-bold text-blue-400 text-right pr-12">${row[3]}</td>` : ''}
-                </tr>
-            `).join('');
+<script>
+    const dataMaster = {
+        mantenimientos: {
+            h: ["Descripción del Producto", "Mantenimiento Preventivo", "Mantenimiento Especializado"],
+            r: [
+                ["Lavadora Carga Frontal", "$300.000", "$360.000"],
+                ["Lavadora Carga Superior", "$220.000", "$250.000"],
+                ["Lavadora/Secadora 2 en 1 Carga Frontal", "$330.000", "$380.000"],
+                ["Lavadora y Secadora (2 Productos)", "$510.000", "$610.000"],
+                ["Lavadora y Twin Wash (2 Productos)", "$480.000", "$570.000"],
+                ["Lavadora Twin Wash", "$210.000", "$250.000"],
+                ["Lavavajillas", "$290.000", "$340.000"],
+                ["Nevecón Básico", "$130.000", "$150.000"],
+                ["Nevecón Premium", "$280.000", "$320.000"],
+                ["Secadora", "$220.000", "$260.000"],
+                ["Wash Tower (Torre de Lavado)", "$510.000", "$570.000"],
+                ["Wash Tower (Sin Desarme)", "$380.000", "$450.000"],
+                ["Estufas", "$300.000", "$350.000"],
+                ["Styler (Cuidado de Ropa)", "$230.000", "$270.000"]
+            ]
+        },
+        instalaciones_general: {
+            h: ["Tipo de Instalación", "Valor del Servicio"],
+            r: [
+                ["Instalación de Lavadora", "$70.000"],
+                ["Instalación de Lavadora y Twin Wash", "$150.000"],
+                ["Instalación de Nevecón", "$90.000"],
+                ["Instalación de Wash Tower Eléctrica", "$160.000"],
+                ["Instalación de Styler", "$90.000"],
+                ["Cambio sentido de apertura puertas Nevera", "$160.000"],
+                ["Desmonte de 2 puertas", "$85.000"],
+                ["Desmonte de 3 puertas", "$115.000"],
+                ["Desmonte de 4 puertas", "$140.000"],
+                ["Desmonte de 5 puertas", "$170.000"]
+            ]
+        },
+        instalaciones_kit: {
+            h: ["Tipo de Instalación con Accesorios", "Incluye Kit", "Sin Kit"],
+            r: [
+                ["Instalación de Secadora", "$320.000", "$160.000"],
+                ["Instalación de Wash Tower a Gas", "$360.000", "$190.000"],
+                ["Conversión a Gas Propano / Natural", "$180.000", "$130.000"],
+                ["Desmonte de Wash Tower", "$190.000", "No aplica"],
+                ["Cambio sentido de apertura puerta Secadora", "$110.000", "No aplica"],
+                ["Instalación de Lavavajillas", "$340.000", "$190.000"],
+                ["Instalación de Estufa", "$140.000", "$90.000"]
+            ]
+        },
+        television: {
+            h: ["Tamaño de Televisión", "Sin Base", "Soporte Fijo", "Soporte de Brazo"],
+            r: [
+                ["LCD/OLED Menor a 60 Pulgadas", "$180.000", "$250.000", "$420.000"],
+                ["LCD/OLED Mayor o Igual a 60 Pulgadas", "$230.000", "$350.000", "$670.000"],
+                ["LCD/OLED Mayor a 80 Pulgadas", "$310.000", "$520.000", "$870.000"]
+            ]
+        },
+        manos_obra: {
+            h: ["Tipo de Producto", "Tarifa Estándar", "Tarifa Especializada"],
+            r: [
+                ["Lavadoras y Lavadoras Carga Frontal", "$220.000", "$290.000"],
+                ["Secadoras Wash Tower y Apiladas", "$250.000", "$290.000"],
+                ["Cambio de Sello y Rodamientos", "$350.000", "$480.000"],
+                ["Lavavajillas", "$250.000", "$290.000"],
+                ["Lavadora en Wash Tower", "$230.000", "$290.000"],
+                ["Lavadora Twin Wash", "$250.000", "$290.000"],
+                ["Neveras y Nevecones", "$220.000", "$290.000"],
+                ["Estufas", "$220.000", "$290.000"],
+                ["Televisores Menor a 50 Pulgadas", "$180.000", "$230.000"],
+                ["Televisores Mayor a 50 Pulgadas", "$200.000", "$320.000"],
+                ["Televisores Mayor a 75 Pulgadas", "$320.000", "$480.000"],
+                ["Televisores Mayor a 80 Pulgadas", "$380.000", "$570.000"]
+            ]
+        },
+        compresores: {
+            h: ["Tipo de Trabajo en Compresor", "Nevera", "Nevecón"],
+            r: [
+                ["Cambio de Compresor Bogotá", "$690.000", "$820.000"],
+                ["Cambio de Compresor Cundinamarca", "$750.000", "$920.000"],
+                ["Cambio de Compresor (2 Visitas) Bogotá", "$950.000", "$1.120.000"],
+                ["Cambio de Compresor (2 Visitas) Cundinamarca", "$1.110.000", "$1.220.000"],
+                ["Cambio de Compresor y Evaporador/Condensadora", "$740.000", "$910.000"],
+                ["Cambio de Filtro de Agua (Solo Mano de Obra)", "No aplica", "$100.000"]
+            ]
+        },
+        diagnostico: {
+            h: ["Tipo de Diagnóstico", "Valor Domicilio", "Valor Laboratorio"],
+            r: [
+                ["Diagnóstico General", "$80.000", "$70.000"],
+                ["Retiro de Productos Bogotá", "$110.000", "No aplica"],
+                ["Retiro de Productos Cundinamarca", "$150.000", "No aplica"]
+            ]
         }
+    };
 
-        renderTab('mantenimientos');
-    </script>
+    let activeTab = 'mantenimientos';
+
+    function switchTab(tab) {
+        activeTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-${tab}`).classList.add('active');
+        render();
+    }
+
+    function render(filter = "") {
+        const h = document.getElementById('tableHeader');
+        const b = document.getElementById('tableBody');
+        const current = dataMaster[activeTab];
+
+        h.innerHTML = `<tr>${current.h.map(title => `<th class="text-left">${title}</th>`).join('')}</tr>`;
+        
+        const filtered = current.r.filter(row => row[0].toLowerCase().includes(filter.toLowerCase()));
+
+        b.innerHTML = filtered.map(row => `
+            <tr>
+                ${row.map((cell, i) => `
+                    <td class="${i > 0 ? 'price-cell' : 'font-semibold text-slate-700'}">
+                        ${cell}
+                    </td>
+                `).join('')}
+            </tr>
+        `).join('');
+    }
+
+    function filterData() {
+        const val = document.getElementById('searchInput').value;
+        render(val);
+    }
+
+    render();
+</script>
 </body>
 </html>
